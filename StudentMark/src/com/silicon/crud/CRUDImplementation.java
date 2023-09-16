@@ -6,171 +6,171 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
-
 import com.silicon.core.JDBCConnection;
 import com.silicon.model.Student;
 
+
 public class CRUDImplementation implements ICrud{
+	/*Here CRUDImplementation class is created and implemented method from ICrud interface.
+	 *  Created Globally used objected*/
+	Student stu=new Student();
+	JDBCConnection jdbc=new JDBCConnection();
+	Connection con=jdbc.getConnection();
+	Scanner sc=new Scanner(System.in);
 	
-	//enrollmark() method is used for Register the Student mark
-	public void enrollmark() throws ClassNotFoundException, SQLException{		
-		Student st=new Student();//Object created for Student class(Bean class)	
-		JDBCConnection jdbc=new JDBCConnection();//Object created for JDBCConnection Class to call and reuse connection method
-		String sql="insert into studentmark(rollno, name, tam, eng, maths, sci, social, total, avg) values(?,?,?,?,?,?,?,?,?)";
-		Connection con=jdbc.getConnection();// Call Connection method in JDBCConnection class using object
-		PreparedStatement ps=con.prepareStatement(sql);		
-		//Scanner to Getting input from User
-		Scanner sc=new Scanner(System.in);
-		
+	/* enrollmark() for insert data in database using Bean class and Scanner */
+	public void enrollmark() throws SQLException{			
+		String sql="insert into studentmark(rollno, name, tam, eng, maths, sci, social, total, avg) values(?,?,?,?,?,?,?,?,?)";		
+		PreparedStatement ps=con.prepareStatement(sql);			
 		System.out.println("Enter Rollno: ");
 		int rno=sc.nextInt();
-		st.setRollno(rno);		
+		stu.setRollno(rno);		
 		System.out.println("Enter Name: ");
 		String name=sc.next();
-		st.setName(name);		
+		stu.setName(name);		
 		System.out.println("Tamil: ");
 		int tam=sc.nextInt();
-		st.setTam(tam);
+		stu.setTam(tam);
 		System.out.println("English: ");
 		int eng=sc.nextInt();
-		st.setEng(eng);
+		stu.setEng(eng);
 		System.out.println("Maths: ");
 		int mat=sc.nextInt();
-		st.setMaths(mat);
+		stu.setMaths(mat);
 		System.out.println("Science: ");
 		int sci=sc.nextInt();
-		st.setSci(sci);
+		stu.setSci(sci);
 		System.out.println("Social: ");
 		int soc=sc.nextInt();
-		st.setSoc(soc);
+		stu.setSoc(soc);
 		int tot=tam+eng+mat+sci+soc;
-		st.setTot(tot);
+		stu.setTot(tot);
+		System.out.println("Total: "+tot);
 		int avg=tot/5;
-		st.setAvg(avg);
+		System.out.println("Average: "+avg);
+		stu.setAvg(avg);
 		
-		//Store the data in database
-		ps.setInt(1, st.getRollno());
-		ps.setString(2, st.getName());
-		ps.setInt(3, st.getTam());
-		ps.setInt(4, st.getEng());
-		ps.setInt(5, st.getMaths());
-		ps.setInt(6, st.getSci());
-		ps.setInt(7, st.getSoc());
-		ps.setInt(8, st.getTot());
-		ps.setInt(9, st.getAvg());	
+		ps.setInt(1,stu.getRollno());
+		ps.setString(2, stu.getName());
+		ps.setInt(3, stu.getTam());
+		ps.setInt(4, stu.getEng());
+		ps.setInt(5, stu.getMaths());
+		ps.setInt(6, stu.getSci());
+		ps.setInt(7, stu.getSoc());
+		ps.setInt(8, stu.getTot());
+		ps.setInt(9, stu.getAvg());	
 		int update=ps.executeUpdate();
+		
 		if(update>0) {
-			System.out.println("Mark Submitted Succesfully");
+			viewmark();
 		}else {
 			System.out.println("Not Success");
 		}
+		con.close();
 	}
-
-	//viewmark() method is used for View the Student mark from database table
-	public void viewmark() throws ClassNotFoundException {
-		JDBCConnection jdbc=new JDBCConnection();//Object created for JDBCConnection Class to call and reuse connection method
-		
+	/* viewmark() for view select data from database using beanclass*/
+	public void viewmark()  {	
 		try {
-			Connection con=jdbc.getConnection();// Call Connection method in JDBCConnection class using object
 			Statement st=con.createStatement();
 			ResultSet rs=st.executeQuery("select * from studentmark");
-			System.out.println("View mark");
-			while(rs.next()) {
-			int rno=rs.getInt(1);
-			String name=rs.getString(2);
-			int tam=rs.getInt(3);
-			int eng=rs.getInt(4);
-			int mat=rs.getInt(5);
-			int sci=rs.getInt(6);
-			int soc=rs.getInt(7);
-			int tot=rs.getInt(8);
-			int avg=rs.getInt(9);
 			
-			//Print the data from database
+			while(rs.next()) {
+			stu.setRollno(rs.getInt(1));
+			stu.setName(rs.getString(2));
+			stu.setTam(rs.getInt(3));
+			stu.setEng(rs.getInt(4));
+			stu.setMaths(rs.getInt(5));
+			stu.setSci(rs.getInt(6));
+			stu.setSoc(rs.getInt(7));
+			stu.setTot(rs.getInt(8));
+			stu.setAvg(rs.getInt(9));
+			
+			int rno=stu.getRollno();
+			String name=stu.getName();
+			int tam=stu.getTam();
+			int eng=stu.getEng();
+			int mat=stu.getMaths();
+			int sci=stu.getSci();
+			int soc=stu.getSoc();
+			int tot=stu.getTot();
+			int avg=stu.getAvg();
+				
 			System.out.println(rno+"|"+name+"|"+tam+"|"+eng+"|"+mat+"|"+sci+"|"+soc+"|"+tot+"|"+avg);
 			}
+			con.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
+		}		
 	}
-
-	//updatemark() method is used Update the Student mark.
+	
+	/* updatemark() for update data in database using Beanclass and Scanner*/
 	public void updatemark() throws SQLException {
-		System.out.println("Student Mark Updation");
-		Student st=new Student();//Object created for Student class(Bean class)	
-		JDBCConnection jdbc=new JDBCConnection();//Object created for JDBCConnection Class to call and reuse connection method
 		String sql="update studentmark set name=?, tam=?, eng=?, maths=?, sci=?, social=?, total=?, avg=? where rollno=? ";
-		Connection con=jdbc.getConnection();// Call Connection method in JDBCConnection class using object
 		PreparedStatement ps=con.prepareStatement(sql);
-		//Scanner to Getting input from User
-		Scanner sc=new Scanner(System.in);		
-		System.out.println("Enter Rollno: ");
+		
+		System.out.println("Enter Rollno to Update: ");
 		int rno=sc.nextInt();
-		st.setRollno(rno);
+		stu.setRollno(rno);
 		System.out.println("Enter Name: ");
 		String name=sc.next();
-		st.setName(name);
+		stu.setName(name);
 		System.out.println("Tamil: ");
 		int tam=sc.nextInt();
-		st.setTam(tam);
+		stu.setTam(tam);
 		System.out.println("English: ");
 		int eng=sc.nextInt();
-		st.setEng(eng);
+		stu.setEng(eng);
 		System.out.println("Maths: ");
 		int mat=sc.nextInt();
-		st.setMaths(mat);
+		stu.setMaths(mat);
 		System.out.println("Science: ");
 		int sci=sc.nextInt();
-		st.setSci(sci);
+		stu.setSci(sci);
 		System.out.println("Social: ");
 		int soc=sc.nextInt();
-		st.setSoc(soc);
+		stu.setSoc(soc);
 		int tot=tam+eng+mat+sci+soc;
-		st.setTot(tot);
+		stu.setTot(tot);
+		System.out.println("Total: "+tot);
 		int avg=tot/5;
-		st.setAvg(avg);
+		System.out.println("Average: "+avg);
+		stu.setAvg(avg);
 		
-		//Store the data in database
-		ps.setInt(9, st.getRollno());
-		ps.setString(1, st.getName());
-		ps.setInt(2, st.getTam());
-		ps.setInt(3, st.getEng());
-		ps.setInt(4, st.getMaths());
-		ps.setInt(5, st.getSci());
-		ps.setInt(6, st.getSoc());
-		ps.setInt(7, st.getTot());
-		ps.setInt(8, st.getAvg());	
-		int update=ps.executeUpdate();
+		
+		ps.setInt(9, stu.getRollno());
+		ps.setString(1, stu.getName());
+		ps.setInt(2, stu.getTam());
+		ps.setInt(3, stu.getEng());
+		ps.setInt(4, stu.getMaths());
+		ps.setInt(5, stu.getSci());
+		ps.setInt(6, stu.getSoc());
+		ps.setInt(7, stu.getTot());
+		ps.setInt(8, stu.getAvg());	
+		int update=ps.executeUpdate();		
 		if(update>0) {
-			System.out.println("Mark Updated Succesfully");
+			viewmark();
 		}else {
 			System.out.println("Not Success");
 		}
+		con.close();
 	}
 	
-	//deletemark() methos is used to Delete mark from database
+	/* deletemark() for delete data in database using Beanclass and Scanner*/
 	public void deletemark() throws SQLException {
-		System.out.println("Select Mark to Delete");
-		Student st=new Student();//Object created for Student class(Bean class)	
-		JDBCConnection jdbc=new JDBCConnection();//Object created for JDBCConnection Class to call and reuse connection method
+		viewmark();
 		String sql="delete from studentmark where rollno=?";
-		Connection con=jdbc.getConnection();// Call Connection method in JDBCConnection class using object
 		PreparedStatement ps=con.prepareStatement(sql);
-		//Scanner to Getting user for which data to be deleted.
-		Scanner sc=new Scanner(System.in);
 		System.out.println("Enter Rollno to Delete: ");
 		int rno=sc.nextInt();
-		st.setRollno(rno);
+		stu.setRollno(rno);
 		
-		ps.setInt(1, st.getRollno());
+		ps.setInt(1, stu.getRollno());
 		int rowdelete=ps.executeUpdate();
 		if(rowdelete>0) {
-			System.out.println("Mark Deleted");
+			viewmark();
 		}else {
 			System.out.println("Can't Deleted");
-		}		
+		}	
+		con.close();
 	}	
 }

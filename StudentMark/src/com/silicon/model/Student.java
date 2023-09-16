@@ -1,8 +1,10 @@
 package com.silicon.model;
 
-import java.util.Scanner;
+
 
 public class Student {
+	/* This  class is used for getter and setter method
+	 *  which is intermediate use for store and retrieve data from database */
 	private int rollno;
 	private String name;
 	private int tam;

@@ -4,10 +4,11 @@ import java.sql.SQLException;
 import java.util.Scanner;
 import com.silicon.crud.CRUDImplementation;
 
+/*This Class is Main class and UI for the Project
+ * Here we used Scanner method for UI */
 public class MainStudentApplication {
-
+	
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		//Object Created for CRUDImplementation class
 		CRUDImplementation ob=new CRUDImplementation();		
 		Scanner sc=new Scanner(System.in);
 		System.out.println("1. Enroll Student Mark");
@@ -16,7 +17,6 @@ public class MainStudentApplication {
 		System.out.println("4. Delete Student Mark");
 		
 		int select=sc.nextInt();
-		//switch case to call appropriate method in CRUDImplementation Class
 		switch (select) {
 		case 1: 
 			ob.enrollmark();
@@ -34,8 +34,6 @@ public class MainStudentApplication {
 		default:
 			System.out.println("Invalid Selection");
 			break;
-		}
-		
+		}		
 	}
-
 }
